@@ -25,6 +25,21 @@ router.get('/', (req, res) => {
   res.status(200).json(posts);
 });
 
+// Create new post
+router.post('/', (req, res) => {
+  const newPost = {
+    id: posts.length + 1,
+    title: req.body.title,
+  };
+
+  if (!newPost.title) {
+    return res.status(400).json({ msg: 'Please include a title' });
+  }
+
+  posts.push(newPost);
+  res.status(201).json({ msg: 'New post created' });
+});
+
 // Get one post
 router.get('/:id', (req, res) => {
   const id = parseInt(req.params.id);
