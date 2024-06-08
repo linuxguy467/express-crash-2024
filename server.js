@@ -18,4 +18,11 @@ app.get('/api/posts', (req, res) => {
   res.json(posts);
 });
 
+app.get('/api/posts/:id', (req, res) => {
+  const id = parseInt(req.params.id);
+  const post = posts.find((post) => post.id === id);
+
+  res.json(post);
+});
+
 app.listen(port, () => console.log(`server is running on port ${port}`));
