@@ -1,9 +1,9 @@
-const express = require('express');
-const posts = require('./posts');
+import express from 'express';
+import posts from './posts.js';
 
 const router = express.Router();
 
 // Routes
 router.use('/posts', posts);
 
-module.exports = router;
+export default router;

@@ -1,8 +1,13 @@
-const express = require('express');
-const path = require('path');
-const api = require('./routes');
+import express from 'express';
+import path from 'node:path';
+import { fileURLToPath } from 'node:url';
+import api from './routes/index.js';
 
 const port = process.env.PORT || 5010;
+
+// Get current path
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
 
 const app = express();
 
