@@ -15,7 +15,18 @@ let posts = [
 ];
 
 app.get('/api/posts', (req, res) => {
-  res.json(posts);
+  const limit = parseInt(req.query.limit);
+  const sort = req.query.sort;
+
+  if (!isNaN(limit) && limit > 0 && sort === 'desc') {
+    res.json([...posts].sort((a, b) => b.id - a.id).slice(0, limit));
+  } else if (!isNaN(limit) && limit > 0) {
+    res.json(posts.slice(0, limit));
+  } else if (sort === 'desc') {
+    res.json([...posts].sort((a, b) => b.id - a.id));
+  } else {
+    res.json(posts);
+  }
 });
 
 app.get('/api/posts/:id', (req, res) => {
