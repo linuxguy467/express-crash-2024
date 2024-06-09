@@ -4,6 +4,7 @@ import { fileURLToPath } from 'node:url';
 import api from './routes/index.js';
 import logger from './middleware/logger.js';
 import errorHandler from './middleware/error.js';
+import notFound from './middleware/notFound.js';
 
 const port = process.env.PORT || 5010;
 
@@ -26,7 +27,8 @@ app.use(express.static(join(__dirname, 'public')));
 // API
 app.use('/api', api);
 
-// Error Handler
+// Error middleware
+app.use(notFound);
 app.use(errorHandler);
 
 app.listen(port, () => console.log(`server is running on port ${port}`));
