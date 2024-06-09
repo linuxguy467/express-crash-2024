@@ -2,6 +2,7 @@ import express from 'express';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 import api from './routes/index.js';
+import logger from './middleware/logger.js';
 
 const port = process.env.PORT || 5010;
 
@@ -14,6 +15,9 @@ const app = express();
 // Body parser
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
+
+// Custom middleware
+app.use(logger);
 
 // setup static folder
 app.use(express.static(path.join(__dirname, 'public')));
