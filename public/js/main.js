@@ -26,9 +26,35 @@ async function showPosts() {
       const postUpdateBtn = document.createElement('button');
       postUpdateBtn.type = 'button';
       postUpdateBtn.textContent = 'Update Post';
+      const postDelBtn = document.createElement('button');
+      postDelBtn.type = 'button';
+      postDelBtn.textContent = 'X';
 
       postEl.appendChild(postLink);
       postEl.appendChild(postUpdateBtn);
+      postEl.appendChild(postDelBtn);
+
+      postDelBtn.addEventListener('click', async (e) => {
+        e.preventDefault();
+        try {
+          if (confirm('Are you sure you want to delete this post?')) {
+            const res = await fetch(`/api/posts/${post.id}`, {
+              method: 'DELETE',
+              headers: {
+                'Content-Type': 'application/json',
+              },
+            });
+
+            if (!res.ok) {
+              throw new Error(`Failed to delete post with id ${id}`);
+            }
+
+            showPosts();
+          }
+        } catch (error) {
+          console.error(error);
+        }
+      });
 
       postUpdateBtn.addEventListener('click', (e) => {
         e.preventDefault();
@@ -85,21 +111,25 @@ async function showPosts() {
               const formData = new FormData(this);
               const title = formData.get('title');
 
-              const res = await fetch(`/api/posts/${post.id}`, {
-                method: 'PUT',
-                headers: {
-                  'Content-Type': 'application/json',
-                },
-                body: JSON.stringify({ title }),
-              });
+              try {
+                const res = await fetch(`/api/posts/${post.id}`, {
+                  method: 'PUT',
+                  headers: {
+                    'Content-Type': 'application/json',
+                  },
+                  body: JSON.stringify({ title }),
+                });
 
-              if (!res.ok) {
-                throw new Error('Failed to update post');
+                if (!res.ok) {
+                  throw new Error('Failed to update post');
+                }
+
+                dialogEl.close();
+                postEl.removeChild(dialogEl);
+                showPosts();
+              } catch (error) {
+                console.error(error);
               }
-
-              dialogEl.close();
-              postEl.removeChild(dialogEl);
-              showPosts();
             });
 
           dialogEl.showModal();
