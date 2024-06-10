@@ -20,10 +20,20 @@ async function showPosts() {
 
     posts.forEach((post) => {
       const postEl = document.createElement('div');
-      postEl.textContent = post.title;
-      postEl.addEventListener('click', (e) => {
-        if (e.target.firstElementChild) {
-          e.target.getElementsByTagName('dialog')[0].showModal();
+      const postLink = document.createElement('a');
+      postLink.textContent = post.title;
+      postLink.href = `post.html?id=${post.id}`;
+      const postUpdateBtn = document.createElement('button');
+      postUpdateBtn.type = 'button';
+      postUpdateBtn.textContent = 'Update Post';
+
+      postEl.appendChild(postLink);
+      postEl.appendChild(postUpdateBtn);
+
+      postUpdateBtn.addEventListener('click', (e) => {
+        e.preventDefault();
+        if (postEl.getElementsByTagName('dialog')[0]) {
+          postEl.getElementsByTagName('dialog')[0].showModal();
         } else if (output.getElementsByTagName('dialog')[0]) {
           alert(
             `There is an existing dialog showing a post. Please click 'Cancel' on that dialog or submit the update post form`
@@ -31,7 +41,7 @@ async function showPosts() {
         } else {
           const dialog = `
           <dialog id="infoModal-post">
-            <h2>Post Details</h2>
+            <h2>Update Post</h2>
             <form id="update-post">
               <label for="post-title">Title:</label>
               <input type="text" id="post-title" name="title" value="${post.title}"/><br /><br />
