@@ -4,6 +4,13 @@ const output = document.querySelector('#output');
 const button = document.querySelector('#get-posts-btn');
 const form = document.querySelector('#add-post-form');
 
+// helpers
+function getDOMElementFromHTMLString(htmlStr) {
+  const container = document.createElement('div');
+  container.innerHTML = htmlStr;
+  return container.firstElementChild;
+}
+
 // Get posts
 async function showPosts() {
   try {
@@ -19,44 +26,41 @@ async function showPosts() {
     }
 
     posts.forEach((post) => {
-      const postEl = document.createElement('div');
-      const postLink = document.createElement('a');
-      postLink.textContent = post.title;
-      postLink.href = `post.html?id=${post.id}`;
-      const postUpdateBtn = document.createElement('button');
-      postUpdateBtn.type = 'button';
-      postUpdateBtn.textContent = 'Update Post';
-      const postDelBtn = document.createElement('button');
-      postDelBtn.type = 'button';
-      postDelBtn.textContent = 'X';
+      const postHTML = `
+        <div>
+          <a href="post.html?id=${post.id}">${post.title}</a>
+          <button type="button" id="postUpdateBtn">Update Post</button>
+          <button type="button" id="postDelBtn">X</button>
+        </div>
+      `;
 
-      postEl.appendChild(postLink);
-      postEl.appendChild(postUpdateBtn);
-      postEl.appendChild(postDelBtn);
+      const postEl = getDOMElementFromHTMLString(postHTML);
 
-      postDelBtn.addEventListener('click', async (e) => {
-        e.preventDefault();
-        try {
-          if (confirm('Are you sure you want to delete this post?')) {
-            const res = await fetch(`/api/posts/${post.id}`, {
-              method: 'DELETE',
-              headers: {
-                'Content-Type': 'application/json',
-              },
-            });
+      postEl
+        .querySelector('#postDelBtn')
+        .addEventListener('click', async (e) => {
+          e.preventDefault();
+          try {
+            if (confirm('Are you sure you want to delete this post?')) {
+              const res = await fetch(`/api/posts/${post.id}`, {
+                method: 'DELETE',
+                headers: {
+                  'Content-Type': 'application/json',
+                },
+              });
 
-            if (!res.ok) {
-              throw new Error(`Failed to delete post with id ${id}`);
+              if (!res.ok) {
+                throw new Error(`Failed to delete post with id ${id}`);
+              }
+
+              showPosts();
             }
-
-            showPosts();
+          } catch (error) {
+            console.error(error);
           }
-        } catch (error) {
-          console.error(error);
-        }
-      });
+        });
 
-      postUpdateBtn.addEventListener('click', (e) => {
+      postEl.querySelector('#postUpdateBtn').addEventListener('click', (e) => {
         e.preventDefault();
         if (postEl.getElementsByTagName('dialog')[0]) {
           postEl.getElementsByTagName('dialog')[0].showModal();
@@ -66,20 +70,23 @@ async function showPosts() {
           );
         } else {
           const dialog = `
-          <dialog id="infoModal-post">
-            <h2>Update Post</h2>
-            <form id="update-post">
-              <label for="post-title">Title:</label>
-              <input type="text" id="post-title" name="title" value="${post.title}"/><br /><br />
-              <button type="button" id="cancelBtn">Cancel</button>
-              <button type="submit">Update</button>
-            </form>
-          </dialog>
+            <dialog id="infoModal-post">
+              <h2>Update Post</h2>
+              <form id="update-post">
+                <label for="post-title">Title:</label>
+                <input
+                  type="text"
+                  id="post-title"
+                  name="title"
+                  value="${post.title}"
+                /><br /><br />
+                <button type="button" id="cancelBtn">Cancel</button>
+                <button type="submit">Update</button>
+              </form>
+            </dialog>
           `;
 
-          const dialogContainer = document.createElement('div');
-          dialogContainer.innerHTML = dialog;
-          const dialogEl = dialogContainer.firstElementChild;
+          const dialogEl = getDOMElementFromHTMLString(dialog);
 
           dialogEl.addEventListener('click', (e) => {
             e.stopPropagation();
