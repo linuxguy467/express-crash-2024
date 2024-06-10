@@ -5,7 +5,7 @@ import logger from './middleware/logger.js';
 import errorHandler from './middleware/error.js';
 import notFound from './middleware/notFound.js';
 
-const port = process.env.PORT || 5010;
+const port = process.env.MAIN_SERVER_PORT || 5010;
 
 const app = express();
 

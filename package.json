@@ -6,13 +6,16 @@
   "type": "module",
   "scripts": {
     "start": "node --env-file=.env server",
-    "dev": "node --watch --env-file=.env server"
+    "start:express2": "node express2/app.js",
+    "dev": "node --watch --env-file=.env server",
+    "dev:express2": "node --watch express2/app.js"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
   "dependencies": {
     "colors": "^1.4.0",
+    "ejs": "^3.1.10",
     "express": "^4.19.2"
   }
 }
