@@ -35,7 +35,8 @@ async function showPosts() {
             <form id="update-post">
               <label for="post-title">Title:</label>
               <input type="text" id="post-title" name="title" value="${post.title}"/><br /><br />
-              <button type="submit">Update Post</button>
+              <button type="button" id="cancelBtn">Cancel</button>
+              <button type="submit">Update</button>
             </form>
           </dialog>
           `;
@@ -54,11 +55,18 @@ async function showPosts() {
               e.clientY > dialogDimensions.bottom
             ) {
               dialogEl.close();
-              // postEl.removeChild(dialogEl);
             }
           });
 
           postEl.appendChild(dialogEl);
+
+          document
+            .querySelector('#cancelBtn')
+            .addEventListener('click', (e) => {
+              e.preventDefault();
+              dialogEl.close();
+              postEl.removeChild(dialogEl);
+            });
 
           document
             .querySelector('#update-post')
