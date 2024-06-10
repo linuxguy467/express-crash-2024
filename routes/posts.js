@@ -9,19 +9,8 @@ import {
 
 const router = express.Router();
 
-// Get all posts
-router.get('/', getPosts);
+router.route('/').get(getPosts).post(createPost);
 
-// Create new post
-router.post('/', createPost);
-
-// Get one post
-router.get('/:id', getPost);
-
-// Update one post
-router.put('/:id', updatePost);
-
-// Delete one post
-router.delete('/:id', deletePost);
+router.route('/:id').get(getPost).put(updatePost).delete(deletePost);
 
 export default router;
