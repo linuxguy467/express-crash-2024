@@ -1,15 +1,16 @@
+'use strict';
+
 async function main() {
   const postIdField = document.querySelector('#postId');
   const postTitleField = document.querySelector('#postTitle');
 
-  postIdField.textContent = ``;
-  postTitleField.textContent = ``;
-
-  const params = new URL(document.URL).searchParams;
-  const id = parseInt(params.get('id'));
+  const id = parseInt(localStorage.getItem('clickedPostID'));
 
   if (id && !isNaN(id)) {
     try {
+      postIdField.textContent = ``;
+      postTitleField.textContent = ``;
+
       const res = await fetch(`/api/posts/${id}`);
 
       if (!res.ok) {
@@ -23,6 +24,8 @@ async function main() {
     } catch (error) {
       console.error(error);
     }
+  } else {
+    console.error(new Error('The ID is not a number'));
   }
 }
 main();

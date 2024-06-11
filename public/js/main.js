@@ -1,9 +1,5 @@
 'use strict';
 
-const output = document.querySelector('#output');
-const button = document.querySelector('#get-posts-btn');
-const form = document.querySelector('#add-post-form');
-
 // helpers
 function getDOMElementFromHTMLString(htmlStr) {
   const container = document.createElement('div');
@@ -14,6 +10,7 @@ function getDOMElementFromHTMLString(htmlStr) {
 // Get posts
 async function showPosts() {
   try {
+    const output = document.querySelector('#output');
     const res = await fetch('/api/posts');
     if (!res.ok) {
       throw new Error('Failed to fetch posts');
@@ -28,7 +25,7 @@ async function showPosts() {
     posts.forEach((post) => {
       const postHTML = `
         <div>
-          <a href="post.html?id=${post.id}">${post.title}</a>
+          <a href="post.html" id="postLink">${post.title}</a>
           <button type="button" id="postUpdateBtn">Update Post</button>
           <button type="button" id="postDelBtn">X</button>
         </div>
@@ -36,6 +33,9 @@ async function showPosts() {
 
       const postEl = getDOMElementFromHTMLString(postHTML);
 
+      postEl.querySelector('#postLink').addEventListener('click', () => {
+        localStorage.setItem('clickedPostID', `${post.id}`);
+      });
       postEl
         .querySelector('#postDelBtn')
         .addEventListener('click', async (e) => {
@@ -180,5 +180,5 @@ async function addPost(e) {
 }
 
 // Event Listeners
-button.addEventListener('click', showPosts);
-form.addEventListener('submit', addPost);
+document.querySelector('#get-posts-btn').addEventListener('click', showPosts);
+document.querySelector('#add-post-form').addEventListener('submit', addPost);
