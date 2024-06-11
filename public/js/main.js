@@ -11,12 +11,20 @@ function getDOMElementFromHTMLString(htmlStr) {
 async function showPosts() {
   try {
     const output = document.querySelector('#output');
-    const res = await fetch('/api/posts');
-    if (!res.ok) {
-      throw new Error('Failed to fetch posts');
-    }
 
-    const posts = await res.json();
+    let posts = {};
+
+    if (!('posts' in localStorage)) {
+      const res = await fetch('/api/posts');
+      if (!res.ok) {
+        throw new Error('Failed to fetch posts');
+      }
+
+      posts = await res.json();
+      localStorage.setItem('posts', JSON.stringify(posts));
+    } else {
+      posts = JSON.parse(localStorage.getItem('posts'));
+    }
 
     while (output.lastElementChild) {
       output.removeChild(output.lastElementChild);
@@ -34,7 +42,7 @@ async function showPosts() {
       const postEl = getDOMElementFromHTMLString(postHTML);
 
       postEl.querySelector('#postLink').addEventListener('click', () => {
-        localStorage.setItem('clickedPostID', `${post.id}`);
+        localStorage.setItem('clickedPost', `${post.id}`);
       });
       postEl
         .querySelector('#postDelBtn')
@@ -133,6 +141,7 @@ async function showPosts() {
 
                 dialogEl.close();
                 postEl.removeChild(dialogEl);
+                localStorage.clear();
                 showPosts();
               } catch (error) {
                 console.error(error);
@@ -155,6 +164,8 @@ async function addPost(e) {
   const formData = new FormData(this);
   const title = formData.get('title');
 
+  this.querySelector('#title').value = '';
+
   try {
     const res = await fetch('/api/posts', {
       method: 'POST',
@@ -173,6 +184,7 @@ async function addPost(e) {
     const postEl = document.createElement('div');
     postEl.textContent = newPost.title;
     output.appendChild(postEl);
+    localStorage.clear();
     showPosts();
   } catch (error) {
     console.error(error);

@@ -1,25 +1,30 @@
 'use strict';
 
 async function main() {
-  const postIdField = document.querySelector('#postId');
-  const postTitleField = document.querySelector('#postTitle');
+  if ('clickedPost' in localStorage) {
+    const postIdField = document.querySelector('#postId');
+    const postTitleField = document.querySelector('#postTitle');
+    const id = parseInt(localStorage.getItem('clickedPost'));
 
-  let id = '';
-  if ('clickedPostID' in localStorage) {
-    id = parseInt(localStorage.getItem('clickedPostID'));
-
-    if (id && !isNaN(id)) {
+    if (!isNaN(id)) {
       try {
         postIdField.textContent = ``;
         postTitleField.textContent = ``;
 
-        const res = await fetch(`/api/posts/${id}`);
+        let post = {};
 
-        if (!res.ok) {
-          throw new Error(`Failed to fetch post with id ${id}`);
+        // fallback in case posts is removed from localStorage
+        if (!('posts' in localStorage)) {
+          const res = await fetch(`/api/posts/${id}`);
+
+          if (!res.ok) {
+            throw new Error(`Failed to fetch post with id ${id}`);
+          }
+
+          post = await res.json();
+        } else {
+          post = JSON.parse(localStorage.getItem('posts'))[id - 1];
         }
-
-        const post = await res.json();
 
         postIdField.textContent = `${post.id}`;
         postTitleField.textContent = `${post.title}`;
