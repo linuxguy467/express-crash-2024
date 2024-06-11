@@ -23,7 +23,9 @@ async function main() {
 
           post = await res.json();
         } else {
-          post = JSON.parse(localStorage.getItem('posts'))[id - 1];
+          post = JSON.parse(localStorage.getItem('posts')).find(
+            (p) => p.id === id
+          );
         }
 
         postIdField.textContent = `${post.id}`;
