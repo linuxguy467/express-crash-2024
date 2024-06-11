@@ -61,6 +61,7 @@ async function showPosts() {
                 throw new Error(`Failed to delete post with id ${id}`);
               }
 
+              localStorage.removeItem('posts');
               showPosts();
             }
           } catch (error) {
@@ -141,7 +142,7 @@ async function showPosts() {
 
                 dialogEl.close();
                 postEl.removeChild(dialogEl);
-                localStorage.clear();
+                localStorage.removeItem('posts');
                 showPosts();
               } catch (error) {
                 console.error(error);
@@ -184,7 +185,7 @@ async function addPost(e) {
     const postEl = document.createElement('div');
     postEl.textContent = newPost.title;
     output.appendChild(postEl);
-    localStorage.clear();
+    localStorage.removeItem('posts');
     showPosts();
   } catch (error) {
     console.error(error);
