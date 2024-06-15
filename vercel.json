@@ -6,7 +6,7 @@
       "use": "@vercel/node"
     },
     {
-      "src": "public/**/*.{html,js}",
+      "src": "public/**",
       "use": "@vercel/static"
     }
   ],
@@ -15,10 +15,13 @@
       "src": "/api/(.*)",
       "dest": "server.js"
     },
-    { "src": "/(.*).js", "dest": "!server.js" },
     {
-      "src": "/(.*)",
+      "src": "/",
       "dest": "public/index.html"
+    },
+    {
+      "src": "/(.+)",
+      "dest": "public/$1"
     }
   ],
   "outputDirectory": "public",
