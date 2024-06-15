@@ -4,6 +4,10 @@
     {
       "src": "server.js",
       "use": "@vercel/node"
+    },
+    {
+      "src": "./public/*",
+      "use": "@vercel/static"
     }
   ],
   "routes": [
@@ -11,5 +15,8 @@
       "src": "/(.*)",
       "dest": "server.js"
     }
-  ]
+  ],
+  "outputDirectory": "public",
+  "buildCommand": "echo \"MAIN_SERVER_PORT=5010\" > .env",
+  "installCommand": "npm install"
 }
